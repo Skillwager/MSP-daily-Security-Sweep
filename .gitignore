@@ -1,0 +1,21 @@
+# Logs and reports (generated at runtime)
+logs/*.log
+reports/*.txt
+
+# Cache directories
+cache/
+*.pyc
+__pycache__/
+
+# Secrets
+.secrets/
+*.pem
+*.key
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/

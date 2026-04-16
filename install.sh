@@ -3,7 +3,6 @@ set -euo pipefail
 
 KIT_PATH="kit/journey-kit.json"
 KIT_URL="https://www.journeykits.ai/api/kits/journey"
-DEPLOY_TARGET="sybtek-ai/msp-daily-security-sweep"
 
 echo "[*] MSP Daily Security Sweep — Install Pipeline"
 echo "[*] Initializing..."
@@ -20,7 +19,6 @@ else
     echo "[+] Kit saved to $KIT_PATH"
 fi
 
-# Validate kit file is non-empty
 if [ ! -s "$KIT_PATH" ]; then
     echo "[!] Error: Kit file is empty or corrupt. Exiting."
     exit 1
@@ -30,18 +28,27 @@ echo "[*] Kit loaded ($(wc -c < "$KIT_PATH") bytes)"
 
 # Ensure scripts are executable
 chmod +x scripts/*.sh 2>/dev/null || true
+chmod +x scripts/*.py 2>/dev/null || true
 
-# Deploy
-echo "[*] Deploying $DEPLOY_TARGET..."
-echo "[+] Kit applied to target: $DEPLOY_TARGET"
-echo "[+] Deployment complete."
+# Validate prerequisites
+echo "[*] Checking prerequisites..."
+if command -v python3 >/dev/null 2>&1; then
+    echo "[+] Python3: $(python3 --version 2>&1)"
+else
+    echo "[!] Python3 not found — required for API scripts"
+fi
 
-# Offer cron setup
-if [ -f "scripts/setup-cron.sh" ]; then
-    echo ""
-    echo "[*] To enable daily scheduling, run:"
-    echo "    ./scripts/setup-cron.sh"
+if command -v curl >/dev/null 2>&1; then
+    echo "[+] curl: available"
+else
+    echo "[!] curl not found — required for API calls"
 fi
 
 echo ""
-echo "[+] MSP Daily Security Sweep fully deployed and scheduled."
+echo "[*] To validate credentials, run:"
+echo "    bash scripts/setup.sh"
+echo ""
+echo "[*] To enable daily scheduling, run:"
+echo "    ./scripts/setup-cron.sh"
+echo ""
+echo "[+] MSP Daily Security Sweep fully deployed."
