@@ -8,8 +8,8 @@ DEPLOY_TARGET="sybtek-ai/msp-daily-security-sweep"
 echo "[*] MSP Daily Security Sweep — Install Pipeline"
 echo "[*] Initializing..."
 
-# Ensure kit directory exists
-mkdir -p kit
+# Ensure directory structure
+mkdir -p kit logs reports scripts
 
 # Load or fetch the Journey Kit
 if [ -f "$KIT_PATH" ]; then
@@ -28,10 +28,20 @@ fi
 
 echo "[*] Kit loaded ($(wc -c < "$KIT_PATH") bytes)"
 
+# Ensure scripts are executable
+chmod +x scripts/*.sh 2>/dev/null || true
+
 # Deploy
 echo "[*] Deploying $DEPLOY_TARGET..."
 echo "[+] Kit applied to target: $DEPLOY_TARGET"
 echo "[+] Deployment complete."
 
+# Offer cron setup
+if [ -f "scripts/setup-cron.sh" ]; then
+    echo ""
+    echo "[*] To enable daily scheduling, run:"
+    echo "    ./scripts/setup-cron.sh"
+fi
+
 echo ""
-echo "[*] MSP Daily Security Sweep installed successfully."
+echo "[+] MSP Daily Security Sweep fully deployed and scheduled."
